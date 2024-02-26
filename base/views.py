@@ -250,6 +250,15 @@ def profilePage(request, id):
     context = {"profile":profile, "user":usr, "classrooms":classrooms}
     return render(request, "base/profile.html", context)
 
+@login_required(login_url="login")
+def joinLink(request, pk):
+    classroom = Classroom.objects.get(id=pk)
+    if request.user not in classroom.participants.all() and request.user.id != classroom.host.id:
+        classroom.participants.add(request.user)
+        return redirect("classroom", classroom.id)
+    else:
+        return redirect("home")
+
 def userExists(username):
     try:
         user = User.objects.get(username=username)
@@ -259,4 +268,3 @@ def userExists(username):
             return False
     except:
         return False
-    

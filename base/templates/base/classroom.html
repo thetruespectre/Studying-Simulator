@@ -49,6 +49,7 @@
         {% csrf_token %}
         <label class="form-label"><b>Add a participant</b></label><br>
         <input type="text" name="new_participant" class="rounded form-control" placeholder="Enter Username..." />
+        <label>Or copy <a href="{% url 'join-link' classroom.id %}">invite link</a></label>
     </form>
 </div>
 
