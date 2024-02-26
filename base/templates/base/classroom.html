@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="container"><div class="row">
+
+<div class="col-8">
+<div class="m-3">
+    <h5>{{classroon.subejct}}</h5>
+    <h1>{{classroom.name}}</h1>
+    <span>By: <a href="{% url 'profile-page' classroom.host.id %}">{{classroom.host.username}}</a></span>
+
+    {% if classroom.description != None %}
+        <br>
+        <p>{{classroom.description}}</p>
+    {% endif %}
+    <br>
+    {% if classroom.updated != None %}
+        <span>Updated: {{classroom.updated}}</span><br>
+    {% endif %}
+    <span>Created: {{classroom.created}}</span>
+    <br><br>
+
+
+    {% if request.user.id == classroom.host.id or request.user.is_superuser %}
+        <a href="{% url 'edit-classroom' classroom.id %}"><button class="btn btn-primary m-1">
+            Edit Classroom
+        </button></a>
+        <a href="{% url 'delete-classroom' classroom.id %}"><button class="btn btn-outline-danger m-1">
+            Delete Classroom
+        </button></a>
+    {% endif %}
+</div>
+
+<hr>
+<form method="POST" action="" style="position: absolute;" class="">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Send a message..." class="rounded form-control">
+</form>
+<br><br>
+
+{% include 'base/messageComponent.html' %}
+</div>
+
+<div class="col border-start m-1">
+    <h1 class="m-2">Participants</h1>
+    {% include 'base/participantsComponent.html' %}
+    <hr>
+    <form method="POST" action="" class="m-2">
+        {% csrf_token %}
+        <label class="form-label"><b>Add a participant</b></label><br>
+        <input type="text" name="new_participant" class="rounded form-control" placeholder="Enter Username..." />
+    </form>
+</div>
+
+</div></div>
+{% endblock %}

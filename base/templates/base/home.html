@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<a href="{% url 'create-classroom' %}"><button class="btn btn-primary m-2">
+    + Create Room
+</button></a>
+<a href="{% url 'create-subject' %}"><button class="btn btn-outline-primary m-2">
+    + Create Subject
+</button></a>
+
+<br><hr><br>
+
+<div class="container">
+<div class="row">
+
+    <div class="col border-end">
+        <h1>Subjects</h1>
+        <br>
+
+        <a href="{% url 'home' %}"><h2>All</h2></a>
+        {% for subject in subjects %}
+
+            <a href="{% url 'home' %}?q={{subject.name}}"><h2>{{subject.name}}</h2></a>
+
+        {% endfor %}
+    </div>
+
+    <div class="col-6">
+        <h1>Classrooms</h1>
+        {% if not_new == False or request.user.is_authenticated == False %}
+            <h5>Create a classroom or get invited into one to start!</h5>
+        {% else %}
+            {% if count == 0 %}
+                <h5>No classrooms found</h5>
+            {% else %}
+                <h5>Classrooms found: {{count}}</h5>
+            {% endif %}
+        {% endif %}
+        <br>
+
+        {% include 'base/classroomComponent.html' %}
+    </div>
+
+    <div class="col border-start">
+        <h1>Activity Feed</h1><br>
+        {% include 'base/feedComponent.html' %}
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

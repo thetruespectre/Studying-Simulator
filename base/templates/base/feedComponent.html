@@ -1,0 +1,23 @@
+{% for message in messagesChat %}
+    {% if request.user in message.classroom.participants.all or request.user.is_superuser %}
+        {% if forloop.counter < 5 %}
+            <div class="rounded border p-3 m-3">
+                <small>{{message.user}} {{message.created|timesince}} ago in {{message.classroom.name}} {% if message.updated != message.created %}(Updated){% endif %}</small>
+                <p>{{message.body}}</p>
+                <form method="POST" action="" class="mb-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="message_classroom" value="{{message.classroom.id}}" />
+                    <input type="text" class="form-control" placeholder="Reply..." name="new_message" />
+                </form>
+                {% if request.user.id == message.user.id or request.user.is_superuser %}
+                    <a href="{% url 'edit-message' message.id %}"><button class="btn btn-primary m-1">
+                        Edit
+                    </button></a>
+                    <a href="{% url 'delete-message' message.id %}"><button class="btn btn-outline-danger m-1">
+                        Delete
+                    </button></a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endfor %}

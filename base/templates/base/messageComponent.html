@@ -1,0 +1,21 @@
+{% for message in messagesChat %}
+
+    <div class="m-3 rounded border p-3 w-75">
+        <span><a href="{% url 'profile-page' message.user.id %}">{{message.user.username}}</a></span>
+        {% if message.is_updated %}
+            <span>(Updated)</span>
+        {% endif %}
+        <p>{{message.body}}</p>
+
+        <span>{{message.created|timesince}} ago</span>
+        {% if request.user.id == message.user.id or request.user.is_superuser %}
+            <a href="{% url 'edit-message' message.id %}"><button class="btn btn-primary m-1">
+                Edit
+            </button></a>
+            <a href="{% url 'delete-message' message.id %}"><button class="btn btn-outline-danger m-1">
+                Delete
+            </button></a>
+        {% endif %}
+    </div>
+
+{% endfor %}

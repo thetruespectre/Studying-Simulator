@@ -1,0 +1,24 @@
+{% for classroom in classrooms %}
+    {% if request.user in classroom.participants.all or request.user.id == classroom.host.id and request.user.is_authenticated or request.user.is_superuser or profile %}
+        <div class="m-3 rounded border p-3">
+            <span><a href="{% url 'profile-page' classroom.host.id %}">{{classroom.host.username}}</a></span>
+
+            {% if request.user in classroom.participants.all or request.user.id == classroom.host.id and request.user.is_authenticated or request.user.is_superuser %}
+                <a href="{% url 'classroom' classroom.id %}"><h1>{{classroom.name}}</h1></a>
+            {% else %}
+                <h1>{{classroom.name}}</h1>
+            {% endif %}
+            <h3>{{classroom.subject.name}}</h3>
+
+            {% if classroom.description != None %}
+                <br>
+                <p>{{classroom.description}}</p>
+            {% endif %}
+
+            {% if classroom.is_updated %}
+                <span>(Updated)</span>
+            {% endif %}
+            <span>Created {{classroom.created|timesince}} ago</span>
+        </div>
+    {% endif %}
+{% endfor %}

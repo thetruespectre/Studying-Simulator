@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block content %}
+
+{% if user.id == request.user.id or request.user.is_superuser %}
+    <h1 class="m-2">Hello, {{user.username}}</h1>
+    <a href="{% url 'edit-user' %}"><button class="btn btn-outline-primary m-2">Edit Profile</button></a>
+{% else %}
+    <h1 class="m-2">{{user.username}}</h1>
+{% endif %}
+<br><br>
+
+{% if user.id == request.user.id %}
+    <h2 class="m-1">Your Classrooms:</h2>
+{% else %}
+    <h2>{{user.username}}'s Classrooms:</h2>
+{% endif %}
+<br>
+
+{% include 'base/classroomComponent.html' %}
+
+{% endblock %}
