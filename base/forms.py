@@ -20,4 +20,4 @@ class MessageForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ["pfp", "name", "username", "email", "bio"]

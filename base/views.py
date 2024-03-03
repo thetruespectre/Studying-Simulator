@@ -189,10 +189,14 @@ def loginForm(request):
     page = "login"
     
     if request.method == "POST":
-        username = request.POST.get("username")
+        email = request.POST.get("username")
         password = request.POST.get("password")
-        if userExists(username):
-            user = authenticate(username=username, password=password)
+        if userEmailExists(email) or userUsernameExists(email):
+            if userEmailExists(email):
+                user = authenticate(email=email, password=password)
+            elif userUsernameExists(email):
+                user = authenticate(userame=email, password=password)
+                
             if user:
                 if request.user.is_authenticated:
                     logout(request)
@@ -232,7 +236,7 @@ def registerForm(request):
 def userEdit(request):
     form = UserForm(instance=request.user)
     if request.method == "POST":
-        form = UserForm(request.POST, instance=request.user)
+        form = UserForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect("profile-page", request.user.id)
@@ -259,7 +263,17 @@ def joinLink(request, pk):
     else:
         return redirect("home")
 
-def userExists(username):
+def userEmailExists(email):
+    try:
+        user = User.objects.get(email=email)
+        if user:
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+def userUsernameExists(username):
     try:
         user = User.objects.get(username=username)
         if user:

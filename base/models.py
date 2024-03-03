@@ -3,7 +3,17 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    pass
+    pfp = models.ImageField(default="def_pfp.svg")
+    bio = models.TextField(null=True, blank=True)
+    name = models.CharField(default=AbstractUser.USERNAME_FIELD, null=True, blank=True, max_length=200)
+    username = models.CharField(max_length=200, unique=True, null=True, blank=True)
+    email = models.EmailField(unique=True)
+    
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+    
+    def __str__(self):
+        return self.USERNAME_FIELD
 
 class Subject(models.Model):
     name = models.CharField(max_length=200)
