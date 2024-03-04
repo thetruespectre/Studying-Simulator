@@ -78,8 +78,12 @@ def classroom(request, id):
     elif request.method == "POST" and request.POST.get("message") == None:
         if request.user in classroom.participants.all() or request.user.is_superuser or request.user.id == classroom.host.id:
             new_participant = request.POST.get("new_participant")
-            if userExists(new_participant):
-                usr = User.objects.get(username=new_participant)
+            if userUsernameExists(new_participant) or userEmailExists(new_participant):
+                if userUsernameExists(new_participant):
+                    usr = User.objects.get(username=new_participant)
+                elif userEmailExists(new_participant):
+                    usr = User.objects.get(email=new_participant)
+                    
                 classroom.participants.add(usr)
                 return redirect("classroom", classroom.id)
             else:
@@ -189,13 +193,14 @@ def loginForm(request):
     page = "login"
     
     if request.method == "POST":
-        email = request.POST.get("username")
+        emaill = request.POST.get("username")
         password = request.POST.get("password")
-        if userEmailExists(email) or userUsernameExists(email):
-            if userEmailExists(email):
-                user = authenticate(email=email, password=password)
-            elif userUsernameExists(email):
-                user = authenticate(userame=email, password=password)
+        if userEmailExists(emaill) or userUsernameExists(emaill):
+            if userEmailExists(emaill):
+                user = authenticate(username=emaill, password=password)
+            elif userUsernameExists(emaill):
+                eml = User.objects.get(username=emaill).email
+                user = authenticate(username=eml, password=password)
                 
             if user:
                 if request.user.is_authenticated:
@@ -205,7 +210,7 @@ def loginForm(request):
             else:
                 messages.error(request, "Username or Password is Incorrect")
         else:
-            messages.error(request, "User doesn't exist")    
+            messages.error(request, "User doesn't exist")
     
     context = {"page":page}
     return render(request, "base/login.html", context)
@@ -222,6 +227,12 @@ def registerForm(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            
+            if user.username == None:
+                user.username = user.email
+            user.username = user.username.lower()
+            if user.name == None:
+                user.name = user.username
             user.save()
             
             if request.user.is_authenticated:
@@ -282,3 +293,6 @@ def userUsernameExists(username):
             return False
     except:
         return False
+    
+#Todo
+#

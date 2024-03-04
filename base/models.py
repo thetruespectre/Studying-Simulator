@@ -6,14 +6,14 @@ class User(AbstractUser):
     pfp = models.ImageField(default="def_pfp.svg")
     bio = models.TextField(null=True, blank=True)
     name = models.CharField(default=AbstractUser.USERNAME_FIELD, null=True, blank=True, max_length=200)
-    username = models.CharField(max_length=200, unique=True, null=True, blank=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True) 
+    username = models.CharField(max_length=200, unique=True)
     
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
     
     def __str__(self):
-        return self.USERNAME_FIELD
+        return self.email
 
 class Subject(models.Model):
     name = models.CharField(max_length=200)
